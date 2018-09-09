@@ -1,4 +1,5 @@
 from clcrypto import password_hash
+from connection import create_connection
 
 class User(object):
     __id = None
