@@ -1,8 +1,8 @@
 from psycopg2 import connect, OperationalError
 
 def create_connection(db_name):
-    username = "aleksandrasandor"
-    passwd = "1987lukas"
+    username = "postgres"
+    passwd = "coderslab"
     hostname = "127.0.0.1"  # lub "localhost"
     cnx = None
     try:
