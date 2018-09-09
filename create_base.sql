@@ -1,6 +1,5 @@
-CREATE DATABASE users_db;
-
-CREATE TABLE user
+-- CREATE DATABASE users_db;
+CREATE TABLE "user"
 (
 id serial,
 username varchar(255),

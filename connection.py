@@ -1,7 +1,7 @@
 from psycopg2 import connect, OperationalError
 
 def create_connection(db_name):
-    username = "posgres"
+    username = "postgres"
     passwd = "coderslab"
     hostname = "127.0.0.1"  # lub "localhost"
     cnx = None
@@ -51,7 +51,7 @@ def execute_single_sql(cnx, command):
     return result
 
 if __name__ == "__main__":
-    connection = create_connection("postgres")  #tu nazwa bazy
+    connection = create_connection("users_db")  #tu nazwa bazy
     results = execute_sql(connection, "create_base.sql") #tu nazwa pliku, w którym tworzymy zapytanie sql
 
     for result in results:
