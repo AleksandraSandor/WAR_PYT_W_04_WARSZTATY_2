@@ -55,7 +55,7 @@ class Message(object):
     def load_all_messages_for_user(cursor, user_id):
         sql = '''select t.username, u.username, m.text, m.creation_date  
                   from message m join "user" u on m.from_id = u.id join "user" t on m.to_id=t.id
-                  where m.from_id = %s order by m.creation_date;'''
+                  where m.from_id = %s order by m.creation_date desc;'''
         ret = []
         cursor.execute(sql, (user_id,))
         for row in cursor.fetchall():
