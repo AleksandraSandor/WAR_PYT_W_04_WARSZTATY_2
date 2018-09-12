@@ -1,4 +1,3 @@
-from clcrypto import password_hash
 from connection import create_connection
 from users import User
 

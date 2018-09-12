@@ -1,5 +1,4 @@
-from clcrypto import password_hash
-from connection import create_connection
+from controlers import clcrypto
 
 class User(object):
     __id = None
@@ -22,15 +21,18 @@ class User(object):
         return self.__hashed_password
 
     def set_password(self, password, salt):
-        self.__hashed_password = password_hash(password, salt)
+        self.__hashed_password = clcrypto.password_hash(password, salt)
 
     def save_to_db(self, cursor):
         if self.__id == -1:
             # saving new instance using prepared statements
             sql = '''INSERT INTO "user"(username, email, hashed_password) VALUES(%s, %s, %s) RETURNING id;'''
             values = (self.username, self.email, self.hashed_password)
-            cursor.execute(sql, values)
-            self.__id = cursor.fetchone()[0]  # albo cursor.fetchone()['id']
+            try:
+                cursor.execute(sql, values)
+                self.__id = cursor.fetchone()[0]  # albo cursor.fetchone()['id']
+            except Exception as err:
+                print("User with that email already exists.")
             return True
         else:
             sql = '''UPDATE "user" SET username=%s, email=%s, hashed_password=%s WHERE id=%s;'''

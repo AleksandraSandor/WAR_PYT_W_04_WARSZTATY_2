@@ -1,14 +1,13 @@
-from models import users, messages
+from models import users
 from controlers import connection
-import datetime
 
-# ala = User()
-# ala.username = "Agata"
-# ala.email = "agata@o2.pl"
-# ala.set_password("passwd",'12')
-# conn = connection.create_connection("users_db")
-# cursor = conn.cursor()
-# ala.save_to_db(cursor)
+ala = users.User()
+ala.username = "Agata"
+ala.email = "agata3@o2.pl"
+ala.set_password("passwd",'12')
+conn = connection.create_connection("users_db")
+cursor = conn.cursor()
+ala.save_to_db(cursor)
 
 # msg1 = messages.Message()
 # msg1.from_id = 2
@@ -20,10 +19,10 @@ import datetime
 # msg1.save_to_db(cursor)
 
 
-
-conn = connection.create_connection("users_db")
-cursor = conn.cursor()
-msg = messages.Message.load_all_messages_for_user(cursor,1)
-for row in msg:
-    print(f'Message to {row[0]} from {row[1]}. Sent on {row[3]}. Text: "{row[2]}"')
-
+#
+# conn = connection.create_connection("users_db")
+# cursor = conn.cursor()
+# msg = messages.Message.load_all_messages_for_user(cursor,1)
+# for row in msg:
+#     print(f'Message to {row[0]} from {row[1]}. Sent on {row[3]}. Text: "{row[2]}"')
+#

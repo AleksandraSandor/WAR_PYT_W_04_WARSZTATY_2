@@ -10,7 +10,6 @@ def create_connection(db_name):
         cnx.autocommit = True #informacja o tym, że to jest transakcja
         print("Połączenie udane.")
     except OperationalError as error:
-        print(error)
         print("Nieudane połączenie.")
     return cnx
 
