@@ -2,6 +2,7 @@ from connection import create_connection
 from users import User
 
 
+
 class Message(object):
     __id = None
     from_id = None
