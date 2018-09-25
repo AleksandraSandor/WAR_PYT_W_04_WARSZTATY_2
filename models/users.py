@@ -1,4 +1,7 @@
-from controlers import clcrypto
+from controlers.clcrypto import generate_salt, password_hash, check_password
+from controlers.connection import create_connection, execute_sql, execute_single_sql
+
+
 
 class User(object):
     __id = None
@@ -21,7 +24,7 @@ class User(object):
         return self.__hashed_password
 
     def set_password(self, password, salt):
-        self.__hashed_password = clcrypto.password_hash(password, salt)
+        self.__hashed_password = password_hash(password, salt)
 
     def save_to_db(self, cursor):
         if self.__id == -1:

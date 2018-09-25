@@ -1,5 +1,5 @@
-from connection import create_connection
-from users import User
+from controlers.connection import create_connection, execute_sql, execute_single_sql
+from models.users import User
 
 
 
