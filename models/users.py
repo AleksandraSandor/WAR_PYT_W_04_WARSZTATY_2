@@ -1,7 +1,4 @@
 from controlers.clcrypto import generate_salt, password_hash, check_password
-from controlers.connection import create_connection, execute_sql, execute_single_sql
-
-
 
 class User(object):
     __id = None

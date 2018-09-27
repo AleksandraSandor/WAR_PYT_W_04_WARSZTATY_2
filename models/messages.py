@@ -1,8 +1,3 @@
-from controlers.connection import create_connection, execute_sql, execute_single_sql
-from models.users import User
-
-
-
 class Message(object):
     __id = None
     from_id = None
@@ -24,21 +19,23 @@ class Message(object):
     def save_to_db(self, cursor):
         if self.__id == -1:
             # saving new instance using prepared statements
-            sql = '''INSERT INTO message (from_id, to_id, text, creation_date) VALUES(%s, %s, %s, %s) RETURNING id;'''
-            values = (self.from_id, self.to_id, self.text, self.creation_date)
+            sql = '''INSERT INTO "message"(from_id, to_id, creation_date, text)
+                      VALUES(%s, %s, CURRENT_TIMESTAMP , %s) RETURNING id'''
+            values = (self.from_id, self.to_id, self.text)
             cursor.execute(sql, values)
             self.__id = cursor.fetchone()[0]  # albo cursor.fetchone()['id']
             return True
         else:
-            sql = '''UPDATE message SET from_id=%s, to_id=%s, text=%s, creation_date=%s WHERE id=%s;'''
-            values = (self.from_id, self.to_id, self.text, self.creation_date, self.id)
+            sql = '''UPDATE "message" SET from_id=%s, to_id=%s, creation_date=CURRENT_TIMESTAMP , text=%s,
+                     WHERE id=%s'''
+            values = (self.from_id, self.to_id, self.text, self.__id)
             cursor.execute(sql, values)
+            cursor.close()
             return True
-        return False
 
     @staticmethod
     def load_message_by_id(cursor, message_id):
-        sql = '''SELECT id, from_id, to_id, text, creation_date FROM message WHERE id=%s;'''
+        sql = '''SELECT id, from_id, to_id, text, creation_date FROM "message" WHERE id=%s;'''
         cursor.execute(sql, (message_id,))  # (user_id, ) - bo tworzymy krotkę
         data = cursor.fetchone()
         if data:
@@ -54,18 +51,23 @@ class Message(object):
 
     @staticmethod
     def load_all_messages_for_user(cursor, user_id):
-        sql = '''select t.username, u.username, m.text, m.creation_date  
-                  from message m join "user" u on m.from_id = u.id join "user" t on m.to_id=t.id
-                  where m.from_id = %s order by m.creation_date desc;'''
-        ret = []
+        sql = 'SELECT id, from_id, to_id, creation_date, text FROM "message" WHERE from_id={} ORDER BY creation_date DESC'.format(
+            user_id)
+        result = []
         cursor.execute(sql, (user_id,))
         for row in cursor.fetchall():
-            ret.append(row)
-        return ret
+            loaded_message = Message()
+            loaded_message.__id = row[0]
+            loaded_message.from_id = row[1]
+            loaded_message.to_id = row[2]
+            loaded_message.__creation_date = row[3]
+            loaded_message.text = row[4]
+            result.append(loaded_message)
+        return result
 
     @staticmethod
     def load_all_messages(cursor):
-        sql = '''SELECT id, from_id, to_id, text, creation_date FROM message;'''
+        sql = 'SELECT id, from_id, to_id, creation_date, text FROM "message";'
         ret = []
         cursor.execute(sql)
         for row in cursor.fetchall():
@@ -73,13 +75,17 @@ class Message(object):
             loaded_message.__id = row[0]
             loaded_message.from_id = row[1]
             loaded_message.to_id = row[2]
-            loaded_message.text = row[3]
-            loaded_message.creation_date = row[4]
+            loaded_message.__creation_date = row[3]
+            loaded_message.text = row[4]
             ret.append(loaded_message)
         return ret
 
-    def message(self, cursor):
-        sql = '''DELETE FROM message WHERE id=%s;'''
+    @property
+    def get_id(self):
+        return self.__id
+
+    def delete(self, cursor):
+        sql = '''DELETE FROM "message" WHERE id=%s;'''
         cursor.execute(sql, (self.__id,))
         self.__id = -1
         return True
